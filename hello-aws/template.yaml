@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  hello-aws
+
+  Sample SAM Template for hello-aws
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+Resources:
+  # the hello world function name that AWS generates for you when you start a new SAM Application
+  # this can be named into a meaningful function name
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: hello-aws-translate #either make this very unique or leave unspecified
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Role: '{{resolve:ssm:/workday-extend-tenant-config/LambdaExecutionRole}}'
+      VpcConfig:
+        SecurityGroupIds:
+          - '{{resolve:ssm:/workday-extend-tenant-config/LambdaSecurityGroup}}'
+        SubnetIds:
+          - '{{resolve:ssm:/workday-extend-tenant-config/VPCSubnet1}}'
+          - '{{resolve:ssm:/workday-extend-tenant-config/VPCSubnet2}}'
+  DetectTextFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: hello-aws-detect-text #either make this very unique or leave unspecified
+      CodeUri: hello_world/
+      Handler: detect.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Role: '{{resolve:ssm:/workday-extend-tenant-config/LambdaExecutionRole}}'
+      VpcConfig:
+        SecurityGroupIds:
+          - '{{resolve:ssm:/workday-extend-tenant-config/LambdaSecurityGroup}}'
+        SubnetIds:
+          - '{{resolve:ssm:/workday-extend-tenant-config/VPCSubnet1}}'
+          - '{{resolve:ssm:/workday-extend-tenant-config/VPCSubnet2}}'
+  DetectPIIFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: hello-aws-detect-PII #either make this very unique or leave unspecified
+      CodeUri: hello_world/
+      Handler: detectPII.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Role: '{{resolve:ssm:/workday-extend-tenant-config/LambdaExecutionRole}}'
+      VpcConfig:
+        SecurityGroupIds:
+          - '{{resolve:ssm:/workday-extend-tenant-config/LambdaSecurityGroup}}'
+        SubnetIds:
+          - '{{resolve:ssm:/workday-extend-tenant-config/VPCSubnet1}}'
+          - '{{resolve:ssm:/workday-extend-tenant-config/VPCSubnet2}}'        
+  AnyAPIFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName: hello-aws-any #either make this very unique or leave unspecified
+      CodeUri: hello_world/
+      Handler: any.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Role: '{{resolve:ssm:/workday-extend-tenant-config/LambdaExecutionRole}}'
+      VpcConfig:
+        SecurityGroupIds:
+          - '{{resolve:ssm:/workday-extend-tenant-config/LambdaSecurityGroup}}'
+        SubnetIds:
+          - '{{resolve:ssm:/workday-extend-tenant-config/VPCSubnet1}}'
+          - '{{resolve:ssm:/workday-extend-tenant-config/VPCSubnet2}}'        
+
+Outputs:
+  HelloWorldFunction:
+    Description: "Translate Lambda Function ARN"
+    Value: !GetAtt HelloWorldFunction.Arn
+  DetectTextFunction:
+    Description: "Detect Text Function ARN"
+    Value: !GetAtt DetectTextFunction.Arn
+  DetectPIIFunction:
+    Description: "Detect Text Function ARN"
+    Value: !GetAtt DetectPIIFunction.Arn
+  AnyAPIFunction:
+    Description: "Any Function ARN"
+    Value: !GetAtt AnyAPIFunction.Arn
+  
